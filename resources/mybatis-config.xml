@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<!--取别名 -->
+	<typeAliases>
+		<!-- <typeAlias type="com.ssm.entity.Student" alias="student"/> -->
+		<!--批量设置实体类的别名,默认是类名称首字母小写 -->
+		<package name="com.zk.entity" />
+	</typeAliases>
+
+	<!-- 加载mybatis分页插件PageHelper -->
+	<plugins>
+		<plugin interceptor="com.github.pagehelper.PageInterceptor">
+			<!-- 设置数据库类型 Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库方言，说明mysql数据库方言 -->
+			<property name="helperDialect" value="mysql" />
+		</plugin>
+	</plugins>
+
+	<!--映射器批量加载映射关系,告诉mybatis去哪里寻找映射关系 -->
+	<mappers>
+		<!-- <mapper resource="com/ssm/entity/StudentMapper.xml" /> -->
+		<package name="com.zk.dao" />
+	</mappers>
+
+</configuration>
