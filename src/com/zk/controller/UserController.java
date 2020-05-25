@@ -37,4 +37,14 @@ public class UserController {
 		}
 		return null;
 	}
+
+	/**
+	 * 去注册页面
+	 * 
+	 * @return
+	 */
+	@RequestMapping("/toRegPage.do")
+	public String toRegPage() {
+		return "register";
+	}
 }
