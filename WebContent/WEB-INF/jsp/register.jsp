@@ -189,7 +189,7 @@
         function checkEmail(){
             var email=$("#email").val();
             //邮箱正则表达式-xiefucai@qq.com
-            var reg=/^[a-z0-9]{3,12}@[a-z0-9]{2,3}\.com$/;
+            var reg=/^[a-z0-9]{3,12}@[a-z0-9]{2,6}\.com$/;
             if(!reg.test(email)){
                 //加红色，实线边框
                 $("#email").css("border","1px solid red");

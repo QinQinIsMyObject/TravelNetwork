@@ -14,9 +14,10 @@ import javax.mail.internet.MimeMessage;
  * 发邮件工具类
  */
 public final class MailUtils {
-	private static final String USER = "1812647577@qq.com"; // 发件人邮箱地址
+	// 发件人邮箱地址---一般为公司邮箱
+	private static final String USER = " ";
 	// 如果是qq邮箱可使用客户端授权码或登录密码，163邮箱的话就是开启客户端授权码
-	private static final String PASSWORD = "yzarjuqxstdefigd";
+	private static final String PASSWORD = " ";
 
 	/**
 	 *
@@ -74,6 +75,7 @@ public final class MailUtils {
 	}
 
 	public static void main(String[] args) throws Exception { // 做测试用
+		// 发件人邮箱-发送的内容-发送的标题
 		MailUtils.sendMail("sun_wei.2416@163.com", "这是一封测试邮件，勿回复。", "测试邮件");
 		System.out.println("send success!");
 	}

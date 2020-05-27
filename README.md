@@ -263,6 +263,65 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 
 ## 5、附加
 
+### 临时邮箱
+
+```
+发
+http://tool.chacuo.net/mailsend
+https://www.guerrillamail.com/zh/compose
+https://trashmail.com/
+
+收
+http://www.yopmail.com
+http://www.linshiyouxiang.net/
+转自：https://weibo.com/ttarticle/p/show?id=2309404475875004383440
+http://www.bccto.me/ 
+https://temp-mail.org/zh/ 
+https://10minutemail.net/?lang=zh-cn 
+http://10minutemail.com/10MinuteMail/index.html 
+https://www.guerrillamail.com/zh/ 
+https://www.moakt.com/zh/mail 
+http://www.nowmymail.com 
+http://www.incognitomail.com/ 
+http://24mail.chacuo.net/ 
+http://www.yopmail.com/zh/ 
+http://www.jetable.org/zh/index 
+http://www.mailinator.com
+```
+
+### 临时手机号
+
+```
+转自：https://mp.weixin.qq.com/s?src=11&timestamp=1590563602&ver=2363&signature=2Pvmomd4d5SKLNZwUNPrpTbD9iQ0gz*bUPmjDVXiQWXzvZ--XxM*-taCEF*tS3u8MB9exNCM4pCCfbXZMzyU-RT2d0SnLpqkPWWjzYziAtlrhhgAXCbx6u8O9-nxK7Ln&new=1
+国内免费临时手机号：
+1、http://www.z-sms.com
+2、https://www.becmd.com
+3、https://www.pdflibr.com
+4、https://www.becmd.com
+5、http://www.smszk.com
+
+国外免费临时手机号：
+1、https://zh.mytrashmobile.com（中文）
+2、https://ch.freephonenum.com（中文）
+3、SMSReceiveFree：https://smsreceivefree.com
+4、Receive SMS Online for FREE：https://www.receive-sms-online.info
+5、Receive a SMS Online：https://receive-a-sms.com
+6、Free SMS Numbers Online：https://smsnumbersonline.com
+7、Receive SMS online for Free：https://sms-online.co/receive-free-sms
+8、Receive-SMS：https://receive-sms.com
+9、Receive FREE SMS online：http://receivefreesms.com
+10、RECEIVE SMS ONLINE：https://www.receivesmsonline.net
+11、Free Online Phone：https://www.freeonlinephone.org
+12、Receive SMS Online：http://receive-sms-online.com
+13、TextNow：https://www.textnow.com
+14、Textfree：https://www.pinger.com/text-free/
+15、SELLAITE：http://sms.sellaite.com/
+16、Twilio：https://www.twilio.com/
+17、https://receive-sms.com/
+18、http://receive-sms-online.com/
+19、http://sms.sel
+```
+
 ### 正则表达式(Regular Expression)，常简称为regex、regexp
 
 #### 软件
@@ -336,7 +395,7 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
+	
 	<!--配置前端控制器-DispatcherServlet并加载springmvc的配置文件 -->
 	<servlet>
 		<servlet-name>ssm</servlet-name>
@@ -352,7 +411,7 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 		<servlet-name>ssm</servlet-name>
 		<url-pattern>*.do</url-pattern>
 	</servlet-mapping>
-
+	
 	<!--加载过滤器-字符编码处理 -->
 	<filter>
 		<filter-name>encoding</filter-name>
@@ -379,7 +438,7 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 
 #### mybatis.xml头文件：https://mybatis.org/mybatis-3/getting-started.html
 
-```xml
+​```xml
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">

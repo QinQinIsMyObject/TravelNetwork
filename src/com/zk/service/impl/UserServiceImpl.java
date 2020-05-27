@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.zk.dao.UserMapper;
 import com.zk.entity.User;
 import com.zk.service.UserService;
+import com.zk.utils.MailUtils;
 import com.zk.utils.UuidUtil;
 
 /**
@@ -47,6 +48,10 @@ public class UserServiceImpl implements UserService {
 		user.setStatus("N");
 		int num = uMapper.addUser(user);
 		if (num > 0) {
+			// 用户的信息已经保存到数据库中
+			String context = "<a href='http://localhost:8080/activeMail.do?code=" + user.getCode() + "'>点击激活旅游网</a>";
+			// 发件人邮箱-发送的内容-发送的标题
+			MailUtils.sendMail(user.getEmail(), context, "旅游网激活邮件");
 			return true;
 		}
 		return false;
