@@ -1,5 +1,5 @@
 /**
- * 
+ * 业务层
  */
 package com.zk.service;
 
@@ -14,4 +14,13 @@ import com.zk.entity.User;
 public interface UserService {
 
 	User selectByUid(Integer uid);
+
+	boolean checkUname(String username);
+
+	/**
+	 * 只是关心是否增加成功，不关心是如何增加的
+	 * 
+	 * @return
+	 */
+	boolean registerUser(User user);
 }

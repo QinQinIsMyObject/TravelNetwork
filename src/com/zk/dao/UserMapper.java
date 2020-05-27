@@ -23,4 +23,21 @@ public interface UserMapper {
 	 */
 	@Select("select * from tab_user where uid=#{uid}")
 	User selectByUid(Integer uid);
+
+	/**
+	 * 根据用户名查询该用户
+	 * 
+	 * @param username
+	 * @return
+	 */
+	@Select("select * from tab_user where username=#{username}")
+	User selectByUname(String username);
+
+	/**
+	 * 增加用户-点击注册，增加数据到数据库中
+	 * 
+	 * @param user
+	 * @return
+	 */
+	int addUser(User user);
 }

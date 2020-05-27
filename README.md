@@ -91,7 +91,15 @@ public String toRegPage() {
 
 提交表单时
 
+```jsp
+
+```
+
 离开焦点时
+
+```jsp
+
+```
 
 验证代码
 
@@ -99,19 +107,118 @@ public String toRegPage() {
 
 ```
 
-##### 用户名唯一性
+##### 用户名合法性
 
 用户名通过验证要发送异步Ajax请求-从后台验证用户名是否重复
 
-数据层
+###### 数据层-UserMapper.java
 
-业务层
+```java
+public interface UserMapper {
+	/**
+	 * 根据用户名查询该用户
+	 */
+	@Select("select * from tab_user where username=#{username}")
+	User selectByUname(String username);
+}
+```
 
-控制层
+###### 业务层接口-UserService.java
 
-表示层
+```java
+public interface UserService {
+	boolean checkUname(String username);
+}
+```
+
+###### 业务层实现-在UserServiceImpl.java中重写以下方法
+
+```java
+@Service
+public class UserServiceImpl implements UserService {
+	@Override
+	public boolean checkUname(String username) {
+		User user = uMapper.selectByUname(username);
+		if (user != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+}
+```
+
+###### 控制层-UserController.java
+
+```java
+/**
+ * 验证用户名是否重复
+ */
+@RequestMapping("/checkUname.do")
+public String checkUserName(String username) {
+    boolean flag = uService.checkUname(username);
+    if (!flag) {
+        // 用户名重复，返回false
+        return "false";
+    } else {
+        return "true";
+    }
+}
+```
+
+###### 表示层-在register.jsp的验证用户名中发送ajax请求部分
+
+```js
+//发送ajax请求
+$.post("checkUname.do",{"usernane":uname},function(res){
+    if(res=="false"){
+        //加红色，实线边框
+        $("#username").css("border","1px solid red");
+        $("#msg").html("用户名重复不可用！");
+        return false;
+    }else{
+        //清空红色实线边框
+        $("#username").css("border","");
+        //清空消息
+        $("#msg").html("");
+        return true;
+    }
+})
+```
 
 ##### 保存数据
+
+###### 页面情况
+
+```html
+
+```
+
+
+
+###### 数据层
+
+
+
+###### 映射文件
+
+
+
+###### 业务层接口
+
+
+
+###### 业务层实现
+
+
+
+###### 控制层
+
+
+
+###### 注册失败页面
+
+
 
 ### （6）项目总结
 
@@ -155,6 +262,52 @@ public String toRegPage() {
 
 
 ## 5、附加
+
+### 正则表达式(Regular Expression)，常简称为regex、regexp
+
+#### 软件
+
+**regexBuilder：**https://github.com/ScottLouvau/RegexBuilder
+
+**Regex Match Tracer：**http://www.regexlab.com/
+
+#### 教程
+
+**菜鸟教程：**https://www.runoob.com/regexp/regexp-tutorial.html
+
+**简单教程：**https://www.twle.cn/l/yufei/regexp/regexp-basic-index.html
+
+**regular：**http://www.regular-expressions.info/
+
+**MDN：**https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
+
+**微软：**https://docs.microsoft.com/zh-cn/dotnet/standard/base-types/regular-expressions
+
+**w3cschool：**https://www.w3cschool.cn/zhengzebiaodashi/regexp-tutorial.html
+
+#### 在线生成
+
+**在线工具：**https://tool.lu/regex/
+
+**regex101：**https://regex101.com/
+
+**Regulex：**https://jex.im/regulex/
+
+**菜鸟教程：**http://c.runoob.com/front-end/854
+
+**JSON在线：**https://www.sojson.com/regex/generate
+
+**脚本之家：**http://tools.jb51.net/regex
+
+**Jsons**http://www.jsons.cn/regcode/
+
+**站长之家：**http://tool.chinaz.com/regex/
+
+**开源中国社区：**https://tool.oschina.net/regex/
+
+**debuggex：**https://www.debuggex.com/
+
+**w3cschool：**https://www.w3cschool.cn/zhengzebiaodashi/regexp-tutorial.html
 
 ### web.xml
 

@@ -1,14 +1,16 @@
 /**
- * 
+ * 业务层-实现类
  */
 package com.zk.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.zk.dao.UserMapper;
 import com.zk.entity.User;
 import com.zk.service.UserService;
+import com.zk.utils.UuidUtil;
 
 /**
  * @author Shieh
@@ -25,6 +27,29 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User selectByUid(Integer uid) {
 		return uMapper.selectByUid(uid);
+	}
+
+	@Override
+	public boolean checkUname(String username) {
+		User user = uMapper.selectByUname(username);
+		if (user != null) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	@Transactional
+	public boolean registerUser(User user) {
+		// 生成随机的激活码
+		user.setCode(UuidUtil.getUuid());
+		// 设置用户激活状态为N-未激活
+		user.setStatus("N");
+		int num = uMapper.addUser(user);
+		if (num > 0) {
+			return true;
+		}
+		return false;
 	}
 
 }

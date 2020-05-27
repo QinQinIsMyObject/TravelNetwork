@@ -1,5 +1,5 @@
 /**
- * 
+ * 控制层-调用业务层
  */
 package com.zk.controller;
 
@@ -46,5 +46,43 @@ public class UserController {
 	@RequestMapping("/toRegPage.do")
 	public String toRegPage() {
 		return "register";
+	}
+
+	/**
+	 * 验证用户名是否重复
+	 * 
+	 * @param username
+	 * @return
+	 */
+	@RequestMapping("/checkUname.do")
+	public String checkUserName(String username) {
+		boolean flag = uService.checkUname(username);
+		if (!flag) {
+			// 用户名重复，返回false
+			return "false";
+		} else {
+			return "true";
+		}
+	}
+
+	/**
+	 * 注册功能
+	 * 
+	 * @param user
+	 * @return
+	 */
+	@RequestMapping("/doReg.do")
+	public ModelAndView doReg(User user) {
+		ModelAndView mv = new ModelAndView();
+		boolean flag = uService.registerUser(user);
+		if (flag) {
+			// 注册成功-去注册成功页面
+			mv.setViewName("register_ok");
+		} else {
+			// 注册失败-重新回到注册页面
+			mv.setViewName("register");
+			mv.addObject("msg", "注册失败");
+		}
+		return mv;
 	}
 }
