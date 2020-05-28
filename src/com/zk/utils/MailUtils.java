@@ -14,10 +14,10 @@ import javax.mail.internet.MimeMessage;
  * 发邮件工具类
  */
 public final class MailUtils {
-	// 发件人邮箱地址---一般为公司邮箱
-	private static final String USER = " ";
+	// 发件人邮箱地址---一般为企业邮箱
+	private static final String USER = "xxx@qq.com";
 	// 如果是qq邮箱可使用客户端授权码或登录密码，163邮箱的话就是开启客户端授权码
-	private static final String PASSWORD = " ";
+	private static final String PASSWORD = "xxx";
 
 	/**
 	 *

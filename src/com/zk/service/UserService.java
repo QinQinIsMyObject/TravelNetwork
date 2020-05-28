@@ -23,4 +23,12 @@ public interface UserService {
 	 * @return
 	 */
 	boolean registerUser(User user);
+
+	/**
+	 * 激活用户
+	 * 
+	 * @param user
+	 * @return
+	 */
+	boolean activeUser(String code);
 }

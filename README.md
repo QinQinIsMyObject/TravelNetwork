@@ -87,24 +87,147 @@ public String toRegPage() {
 
 **手机号：**不为空且由11位符合规则的数字组成，不符合要求给出提示信息
 
-###### b、验证时机
+###### b、验证时机-register.jsp
 
 提交表单时
 
-```jsp
-
+```js
+//点击时验证
+$("#btn1").click(function(){
+    $("#registerForm").submit(function(){
+    	return checkUname() && checkEmail() && checkPhone() &&checkPwd() && checkName() &&checkBirth();
+    });
+});
 ```
 
 离开焦点时
 
-```jsp
-
+```js
+//离开时验证
+$("#username").blur(checkUname);
+$("#email").blur(checkEmail);
+$("#telephone").blur(checkPhone);
+$("#password").blur(checkPwd);
+$("#name").blur(checkName);
+$("#birthday").blur(checkBirth);
 ```
 
 验证代码
 
-```jsp
-
+```js
+//验证用户名
+function checkUname(){
+    var uname=$("#username").val();
+    //正则表达式
+    var reg=/^\w{6,10}$/;
+    if(!reg.test(uname)){
+        //加红色，实线边框
+        $("#username").css("border","1px solid red");
+        $("#msg").html("用户名不能为空且由不为空且由数字、字母、下划线组成的6-10个字符！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#username").css("border","");
+    //清空消息
+    $("#msg").html("");
+    //发送ajax请求
+    $.post("checkUname.do",{"username":uname},function(res){
+        if(res=="false"){
+            //加红色，实线边框
+            $("#username").css("border","1px solid red");
+            $("#msg").html("用户名重复不可用！");
+            return false;
+        }else{
+            //清空红色实线边框
+            $("#username").css("border","");
+            //清空消息
+            $("#msg").html("");
+            return true;
+        }
+    })
+    return true;
+}
+//验证邮箱
+function checkEmail(){
+    var email=$("#email").val();
+    //邮箱正则表达式-xiefucai@qq.com
+    var reg=/^[a-z0-9]{3,12}@[a-z0-9]{2,6}\.com$/;
+    if(!reg.test(email)){
+        //加红色，实线边框
+        $("#email").css("border","1px solid red");
+        $("#msg").html("邮箱不为空且要合法！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#email").css("border","");
+    //清空消息
+    $("#msg").html("");
+    return true;
+}
+//验证手机号
+function checkPhone(){
+    var telephone=$("#telephone").val();
+    //手机号正则表达式
+    var reg=/^1[356789]\d{9}$/;
+    if(!reg.test(telephone)){
+        //加红色，实线边框
+        $("#telephone").css("border","1px solid red");
+        $("#msg").html("手机号不为空且由11位符合规则的数字组成！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#telephone").css("border","");
+    //清空消息
+    $("#msg").html("");
+    return true;
+}
+//验证密码
+function checkPwd(){
+    var password=$("#password").val();
+    //密码正则表达式
+    var reg=/^\w{6,15}$/;
+    if(!reg.test(password)){
+        //加红色，实线边框
+        $("#password").css("border","1px solid red");
+        $("#msg").html("手机号不为空且由11位符合规则的数字组成！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#password").css("border","");
+    //清空消息
+    $("#msg").html("");
+    return true;
+}
+//验证姓名
+function checkName(){
+    var name=$("#name").val();
+    if(name.length==0){
+        //加红色，实线边框
+        $("#name").css("border","1px solid red");
+        $("#msg").html("姓名为必填项！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#name").css("border","");
+    //清空消息
+    $("#msg").html("");
+    return true;
+}
+//验证出生日期
+function checkBirth(){
+    var birthday=$("#birthday").val();
+    if(birthday.length==0){
+        //加红色，实线边框
+        $("#birthday").css("border","1px solid red");
+        $("#msg").html("出生日期为必填项！");
+        return false;
+    }
+    //清空红色实线边框
+    $("#birthday").css("border","");
+    //清空消息
+    $("#msg").html("");
+    return true;
+}
 ```
 
 ##### 用户名合法性
@@ -114,37 +237,30 @@ public String toRegPage() {
 ###### 数据层-UserMapper.java
 
 ```java
-public interface UserMapper {
-	/**
-	 * 根据用户名查询该用户
-	 */
-	@Select("select * from tab_user where username=#{username}")
-	User selectByUname(String username);
-}
+/**
+ * 根据用户名查询该用户
+ */
+@Select("select * from tab_user where username=#{username}")
+User selectByUname(String username);
 ```
 
 ###### 业务层接口-UserService.java
 
 ```java
-public interface UserService {
-	boolean checkUname(String username);
-}
+boolean checkUname(String username);
 ```
 
 ###### 业务层实现-在UserServiceImpl.java中重写以下方法
 
 ```java
-@Service
-public class UserServiceImpl implements UserService {
-	@Override
-	public boolean checkUname(String username) {
-		User user = uMapper.selectByUname(username);
-		if (user != null) {
-			return false;
-		} else {
-			return true;
-		}
-	}
+@Override
+public boolean checkUname(String username) {
+    User user = uMapper.selectByUname(username);
+    if (user != null) {
+        return false;
+    } else {
+        return true;
+    }
 }
 ```
 
@@ -188,37 +304,250 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 
 ##### 保存数据
 
-###### 页面情况
+###### 页面情况-register.jsp
 
 ```html
-
+<form id="registerForm" action="doReg.do" method="post">
 ```
 
+###### 数据层-UserMapper.java
 
+```java
+/**
+ * 增加用户-点击注册，增加数据到数据库中
+ * 
+ * @param user
+ * @return
+ */
+int addUser(User user);
+```
 
-###### 数据层
+###### 映射文件-/TravelProject/src/com/zk/dao/UserMapper.xml
 
+```xml
+<!-- 增加用户|注册 -->
+<insert id="addUser" useGeneratedKeys="true" keyProperty="uid">
+    insert into
+    tab_user(username,password,name,birthday,sex,telephone,email,status,code)
+    values(#{username},#{password},#{name},#{birthday},#{sex},#{telephone},#{email},#{status},#{code})
+</insert>
+```
 
+###### 业务层接口-/TravelProject/src/com/zk/service/UserService.java
 
-###### 映射文件
+```java
+/**
+ * 只是关心是否增加成功，不关心是如何增加的
+ * 
+ * @return
+ */
+boolean registerUser(User user);
+```
 
+###### 业务层实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
 
+```java
+@Transactional
+public boolean registerUser(User user) {
+    // 生成随机的激活码
+    user.setCode(UuidUtil.getUuid());
+    // 设置用户激活状态为N-未激活
+    user.setStatus("N");
+    int num = uMapper.addUser(user);
+    if (num > 0) {
+        return true;
+    }
+    return false;
+}
+```
 
-###### 业务层接口
+###### 控制层-/TravelProject/src/com/zk/controller/UserController.java
 
+```java
+/**
+ * 注册功能
+ * 
+ * @param user
+ * @return
+ */
+@RequestMapping("/doReg.do")
+public ModelAndView doReg(User user) {
+    ModelAndView mv = new ModelAndView();
+    boolean flag = uService.registerUser(user);
+    if (flag) {
+        // 注册成功-去注册成功页面
+        mv.setViewName("register_ok");
+    } else {
+        // 注册失败-重新回到注册页面
+        mv.setViewName("register");
+        mv.addObject("msg", "注册失败");
+    }
+    return mv;
+}
+```
 
+##### 注册失败页面-在/TravelProject/WebContent/WEB-INF/jsp/register.jsp页面注册按钮下
 
-###### 业务层实现
+```html
+<!-- 提示信息 -->
+<tr>
+    <td class="td_left"></td>
+    <td class="td_right">
+        <span id="msg" style="color: red;">${msg==null?'':msg}</span>
+    </td>
+</tr>
+```
 
+#### 3.邮件处理
 
+##### 邮箱设置-/TravelProject/src/com/zk/utils/MailUtils.java
 
-###### 控制层
+例如：登录自己申请的QQ邮箱，在”设置-账户-POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务中开启POP3/SMTP服务“；然后在MailUtils中设置自己的邮箱账号和密码(授权码)。
 
+```java
+// 发件人邮箱地址-一般为企业邮箱
+private static final String USER = "xxx@qq.com";
+// 如果是qq邮箱使用客户端授权码，163邮箱的话就是开启客户端授权码
+private static final String PASSWORD = "xxx";
+```
 
+##### 发送邮件-在/TravelProject/src/com/zk/service/impl/UserServiceImpl.java中添加邮件发送代码
 
-###### 注册失败页面
+```java
+@Transactional
+public boolean registerUser(User user) {
+    // 生成随机的激活码
+    user.setCode(UuidUtil.getUuid());
+    // 设置用户激活状态为N-未激活
+    user.setStatus("N");
+    int num = uMapper.addUser(user);
+    if (num > 0) {
+        // 用户的信息已经保存到数据库中
+        String context = "<a href='http://localhost:8080/TravelProject/activeMail.do?code=" + user.getCode()
+            + "'>点击激活旅游网</a>";
+        // 发件人邮箱-发送的内容-发送的标题
+        MailUtils.sendMail(user.getEmail(), context, "旅游网激活邮件");
+        return true;
+    }
+    return false;
+}
+```
 
+#### 4.邮件激活
 
+##### 数据层-/TravelProject/src/com/zk/dao/UserMapper.java
+
+```java
+/**
+ * 根据激活码查询用户
+ * 
+ * @param code
+ * @return
+ */
+@Select("select * from tab_user where code=#{code}")
+User selectByCode(String code);
+
+/**
+ * 更新用户信息
+ * 
+ * @param user
+ * @return
+ */
+int updateUser(User user);
+```
+
+##### 映射文件-/TravelProject/src/com/zk/dao/UserMapper.xml
+
+```xml
+<!-- 更新用户信息 -->
+<update id="updateUser" parameterType="user">
+    update tab_user
+    <set>
+        <if test="username!=null and username!=''">username=#{username},</if>
+        <if test="password!=null and password!=''">password=#{password},</if>
+        <if test="name!=null and name!=''">name=#{name},</if>
+        <if test="birthday!=null and birthday!=''">birthday=#{birthday},</if>
+        <if test="sex!=null and sex!=''">sex=#{sex},</if>
+        <if test="telephone!=null and telephone!=''">telephone=#{telephone},</if>
+        <if test="email!=null and email!=''">email=#{email},</if>
+        <if test="status!=null and status!=''">status=#{status},</if>
+        <if test="code!=null and code!=''">code=#{code}</if>
+    </set>
+    where uid=#{uid}
+</update>
+```
+
+##### 业务接口-/TravelProject/src/com/zk/service/UserService.java
+
+```java
+/**
+ * 激活用户
+ * 
+ * @param user
+ * @return
+ */
+boolean activeUser(String code);
+```
+
+##### 业务实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
+
+```java
+@Transactional
+public boolean activeUser(String code) {
+    User user = uMapper.selectByCode(code);
+    // 注册了也就是有这个用户存在-去激活-返回true
+    if (user != null) {
+        // 设置激活状态为Y
+        user.setStatus("Y");
+        // 更新激活状态为Y
+        if (uMapper.updateUser(user) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    return false;
+}
+```
+
+##### 控制层
+
+```java
+/**
+ * 用户激活；激活成功-去登陆URL； 激活成功-给其提示信息（激活失败，请联系管理员）
+ * 
+ * @param code
+ * @param res
+ * @throws IOException
+ */
+@RequestMapping("/activeMail.do")
+private void activeUser(String code, HttpServletResponse res) throws IOException {
+    boolean flag = uService.activeUser(code);
+    // 提示信息
+    String msg = null;
+    if (flag) {
+        msg = "<h3><a href='toLogin.do'>激活成功，点击登录。</a></h3>";
+    } else {
+        msg = "<h3>激活失败，请联系管理员！</h3>";
+    }
+    res.setContentType("text/html;charset=utf-8");
+    res.getWriter().write(msg);
+}
+```
+
+##### 激活成功去登录页面
+
+```java
+/**
+ * 去登录页面
+ * 
+ * @return
+ */
+@RequestMapping("/toLogin.do")
+public String toLoginPage() {
+    return "login";
+}
+```
 
 ### （6）项目总结
 
@@ -255,7 +584,9 @@ $.post("checkUname.do",{"usernane":uname},function(res){
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zk.dao.UserMapper">
+    
 </mapper>
+
 注意：namespace="com.zk.dao.UserMapper"要和包名对应，出错为namespace="com.SSM.dao.UserMapper"，而包名为"com.zk.dao.UserMapper"
 ```
 
@@ -265,10 +596,10 @@ $.post("checkUname.do",{"usernane":uname},function(res){
 
 ### 临时邮箱
 
-```
+```html
 发
-http://tool.chacuo.net/mailsend
 https://www.guerrillamail.com/zh/compose
+http://tool.chacuo.net/mailsend
 https://trashmail.com/
 
 收
@@ -291,7 +622,7 @@ http://www.mailinator.com
 
 ### 临时手机号
 
-```
+```html
 转自：https://mp.weixin.qq.com/s?src=11&timestamp=1590563602&ver=2363&signature=2Pvmomd4d5SKLNZwUNPrpTbD9iQ0gz*bUPmjDVXiQWXzvZ--XxM*-taCEF*tS3u8MB9exNCM4pCCfbXZMzyU-RT2d0SnLpqkPWWjzYziAtlrhhgAXCbx6u8O9-nxK7Ln&new=1
 国内免费临时手机号：
 1、http://www.z-sms.com
@@ -428,8 +759,6 @@ http://www.mailinator.com
 </web-app>
 ```
 
-
-
 ### MyBatis
 
 #### 官网：https://mybatis.org/mybatis-3/
@@ -438,12 +767,11 @@ http://www.mailinator.com
 
 #### mybatis.xml头文件：https://mybatis.org/mybatis-3/getting-started.html
 
-​```xml
+```xml
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssm.dao.UserMapper">
-
 </mapper>
 ```
 

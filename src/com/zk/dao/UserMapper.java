@@ -40,4 +40,21 @@ public interface UserMapper {
 	 * @return
 	 */
 	int addUser(User user);
+
+	/**
+	 * 根据激活码查询用户
+	 * 
+	 * @param code
+	 * @return
+	 */
+	@Select("select * from tab_user where code=#{code}")
+	User selectByCode(String code);
+
+	/**
+	 * 更新用户信息
+	 * 
+	 * @param user
+	 * @return
+	 */
+	int updateUser(User user);
 }
