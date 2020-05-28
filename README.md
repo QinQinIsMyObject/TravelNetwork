@@ -594,6 +594,12 @@ public String toLoginPage() {
 
 ## 5、附加
 
+### sql教程
+
+https://www.runoob.com/sql/sql-tutorial.html
+
+https://www.1keydata.com/cn/sql/
+
 ### 临时邮箱
 
 ```html
