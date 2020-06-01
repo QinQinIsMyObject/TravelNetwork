@@ -5,6 +5,7 @@ package com.zk.controller;
 
 import java.io.IOException;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,4 +121,35 @@ public class UserController {
 	public String toLoginPage() {
 		return "login";
 	}
+	
+	/**
+	 * 用户登录
+	 * 
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	@RequestMapping("/doLogin.do")
+	public ModelAndView login(String username, String password, HttpServletRequest req) {
+		ModelAndView mv = new ModelAndView();
+		// 1、用户和密码不正确-用户不存在-去登录页面并给其提示-用户名或密码不正确
+		User user = uService.login(username, password);
+		if (user == null) {
+			mv.addObject("msg", "用户名或密码不正确！");
+			mv.setViewName("forward:toLogin.do");
+		}
+		// 2、用户和密码正确-用户存在-用户的状态不为Y-请去邮箱激活用户
+		if (user != null && !"Y".equals(user.getStatus())) {
+			mv.addObject("msg", "登录失败，请在邮箱激活！");
+			mv.setViewName("forward:toLogin.do");
+		}
+		// 3、用户和密码正确-用户存在-用户的状态为Y
+		if (user != null && "Y".equals(user.getStatus())) {
+			// 登录成功后将用户信息保存到session对象当中
+			req.getSession().setAttribute("user", user);
+			mv.setViewName("forward:indexPage.do");
+		}
+		return mv;
+	}
+
 }

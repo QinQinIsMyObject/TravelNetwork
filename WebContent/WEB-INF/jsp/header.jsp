@@ -10,11 +10,12 @@
         <div class="shortcut">
             <!-- 未登录状态  -->
             <div class="login_out">
-                <a href="#">登录</a>
+                <a href="toLogin.do">登录</a>
                 <a href="toRegPage.do">注册</a>
             </div>
             <!-- 登录状态  -->
             <div class="login">
+                <!-- 此user为UserController.java中登录成功后将用户信息保存到session对象当中的user -->
                 <span>欢迎，${sessionScope.user.name==null?"游客":sessionScope.user.name}</span>
                 <a href="myfavorite.html" class="collection">我的收藏</a>
                 <a href="#">退出</a>

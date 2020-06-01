@@ -31,4 +31,6 @@ public interface UserService {
 	 * @return
 	 */
 	boolean activeUser(String code);
+
+	User login(String username, String password);
 }

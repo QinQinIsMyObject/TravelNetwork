@@ -549,6 +549,152 @@ public String toLoginPage() {
 }
 ```
 
+#### 5.用户登录
+
+##### 页面验证
+
+###### 验证规则
+
+用户名：由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
+
+密码：由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
+
+###### 验证时机
+
+用户点击提交时验证
+
+离开焦点时验证
+
+###### 验证实现
+
+```js
+<script type="text/javascript">
+    $(function(){
+    //1、用户点击时验证
+    $("#sub_login").click(function(){
+        return checkUname() && checkPwd();
+    });
+    //2、离开焦点时验证
+    $("#username").blur(checkUname);
+    $("#password").blur(checkPwd);
+});
+
+//验证用户名-由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
+function checkUname(){
+    //1、获取值
+    var uname=$("#username").val();
+    //2、正则表达式
+    var reg_uname=/^\w{6,15}$/;
+    //3、判断并提示
+    if(!reg_uname.test(uname)){
+        $("#username").css("border","1px solid red");
+        $("#errorMsg").html("用户名由6到15个字母、数字、下划线组成！");
+        return false;
+    }
+    //清空边框及提示信息
+    $("#username").css("border","");
+    $("#errorMsg").html("");
+    return true;
+}
+//验证密码-由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
+function checkPwd(){
+    //1、获取值
+    var pwd=$("#password").val();
+    //2、正则表达式
+    var reg_pwd=/^\w{6,15}$/;
+    //3、判断并提示
+    if(!reg_pwd.test(pwd)){
+        $("#password").css("border","1px solid red");
+        $("#errorMsg").html("密码由6到15个字母、数字、下划线组成！");
+        return false;
+    }
+    //清空边框及提示信息
+    $("#password").css("border","");
+    $("#errorMsg").html("");
+    return true;
+}
+</script>
+```
+
+##### 登录实现
+
+###### 数据接口-/TravelProject/src/com/zk/dao/UserMapper.java
+
+```java
+/**
+ * 登录方法
+ * 
+ * @param username
+ * @param password
+ * @return
+ */
+@Select("select * from tab_user where username=#{username} and password=#{password}")
+User login(@Param("username") String username, @Param("password") String password);
+```
+
+###### 业务接口-/TravelProject/src/com/zk/service/UserService.java
+
+```java
+User login(String username, String password);
+```
+
+###### 业务实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
+
+```java
+@Override
+public User login(String username, String password) {
+    return uMapper.login(username, password);
+}
+```
+
+###### 控制层-/TravelProject/src/com/zk/controller/UserController.java
+
+```java
+/**
+ * 用户登录
+ * 
+ * @param username
+ * @param password
+ * @return
+ */
+@RequestMapping("/doLogin.do")
+public ModelAndView login(String username, String password, HttpServletRequest req) {
+    ModelAndView mv = new ModelAndView();
+    // 1、用户和密码不正确-用户不存在-去登录页面并给其提示-用户名或密码不正确
+    User user = uService.login(username, password);
+    if (user == null) {
+        mv.addObject("msg", "用户名或密码不正确！");
+        mv.setViewName("forward:toLogin.do");
+    }
+    // 2、用户和密码正确-用户存在-用户的状态不为Y-请去邮箱激活用户
+    if (user != null && !"Y".equals(user.getStatus())) {
+        mv.addObject("msg", "登录失败，请在邮箱激活！");
+        mv.setViewName("forward:toLogin.do");
+    }
+    // 3、用户和密码正确-用户存在-用户的状态为Y
+    if (user != null && "Y".equals(user.getStatus())) {
+        // 登录成功后将用户信息保存到session对象当中
+        req.getSession().setAttribute("user", user);
+        mv.setViewName("forward:indexPage.do");
+    }
+    return mv;
+}
+```
+
+##### 登录页面信息错误提示-/TravelProject/WebContent/WEB-INF/jsp/login.jsp
+
+```jsp
+<!--登录错误提示消息-->
+<div id="errorMsg" class="alert alert-danger" >${msg==null?'':msg }</div>
+```
+
+##### 首页用户信息显示-/TravelProject/WebContent/WEB-INF/jsp/header.jsp
+
+```jsp
+<!-- 此user为UserController.java中登录成功后将用户信息保存到session对象当中的user -->
+<span>欢迎，${sessionScope.user.name==null?"游客":sessionScope.user.name}</span>
+```
+
 ### （6）项目总结
 
 ## 3、说明
