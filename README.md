@@ -695,6 +695,33 @@ public ModelAndView login(String username, String password, HttpServletRequest r
 <span>欢迎，${sessionScope.user.name==null?"游客":sessionScope.user.name}</span>
 ```
 
+#### 6.用户退出
+
+退出本质-清空Session
+
+##### 页面连接-/TravelProject/WebContent/WEB-INF/jsp/header.jsp
+
+```jsp
+<a href="toLogout.do">退出</a>
+```
+
+##### 控制层代码-/TravelProject/src/com/zk/controller/UserController.java
+
+```java
+/**
+ * 用户退出
+ * 
+ * @param req
+ * @return
+ */
+@RequestMapping("/toLogout.do")
+public ModelAndView logout(HttpServletRequest req) {
+    // 清空session
+    req.getSession().invalidate();
+    return new ModelAndView("forward:indexPage.do");
+}
+```
+
 ### （6）项目总结
 
 ## 3、说明

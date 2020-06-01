@@ -152,4 +152,17 @@ public class UserController {
 		return mv;
 	}
 
+	/**
+	 * 用户退出
+	 * 
+	 * @param req
+	 * @return
+	 */
+	@RequestMapping("/toLogout.do")
+	public ModelAndView logout(HttpServletRequest req) {
+		// 清空session
+		req.getSession().invalidate();
+		return new ModelAndView("forward:indexPage.do");
+	}
+
 }

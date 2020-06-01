@@ -18,7 +18,7 @@
                 <!-- 此user为UserController.java中登录成功后将用户信息保存到session对象当中的user -->
                 <span>欢迎，${sessionScope.user.name==null?"游客":sessionScope.user.name}</span>
                 <a href="myfavorite.html" class="collection">我的收藏</a>
-                <a href="#">退出</a>
+                <a href="toLogout.do">退出</a>
             </div>
         </div>
         <div class="header_wrap">
