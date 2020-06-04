@@ -1,32 +1,22 @@
 # 旅游网
-
 ## 1、主要功能
-
 实现旅游网
-
 ## 2、主要知识点
-
 ### （1）目标
-
 	能正确理解分析旅游网功能需求；
 	能正确创建数据库和表；
 	能理解并熟练搭建SSM环境；
 	掌握基于SSM进行相关功能操作；
 	结合以前所学能灵活综合运用到项目中；
 	积累项目案例经验。
-
 ### （2）任务
-
 ```
 搭建SSM环境；
 完成数据库和表的创建并添加测试数据；
 完成旅游网相关功能。
 ```
-
 ### （3）功能说明
-
 #### 主要功能概述
-
 ```
 旅游网主要有以下八大功能需求：
 	登录功能；
@@ -38,59 +28,37 @@
 	线路详情；
 	线路收藏。
 ```
-
 ### （4）数据库表
-
 ![image-20200520174547171](RImgs/image-20200520174547171.png)
-
 ### （5）功能操作
-
 #### 1.环境搭建
-
 ```
 导入数据库表及相关测试数据；
 导入基础的素材（前端后台）。
 ```
-
 #### 2.注册功能
-
 ##### 去注册页面
-
 a、页面---在header.jsp里面添加这个超链接
-
 ```html
 <a href="toRegPage.do">注册</a>
 ```
-
 b、控制层---在UserController.java中
-
 ```java
 @RequestMapping("/toRegPage.do")
 public String toRegPage() {
     return "register";
 }
 ```
-
 ##### 验证输入的合法性
-
 ###### a、验证规则
-
 **用户名：**不为空且由数字、字母、下划线组成的6-10个字符，不符合要求给出提示信息
-
 **密码：**不为空且由数字、字母、下划线组成的6-15个字符，不符合要求给出提示信息
-
 **姓名：**非空，不符合要求给出提示信息
-
 **出生日期：**非空，不符合要求给出提示信息
-
 **邮箱：**不为空且要合法，不符合要求给出提示信息
-
 **手机号：**不为空且由11位符合规则的数字组成，不符合要求给出提示信息
-
 ###### b、验证时机-register.jsp
-
 提交表单时
-
 ```js
 //点击时验证
 $("#btn1").click(function(){
@@ -99,9 +67,7 @@ $("#btn1").click(function(){
     });
 });
 ```
-
 离开焦点时
-
 ```js
 //离开时验证
 $("#username").blur(checkUname);
@@ -111,9 +77,7 @@ $("#password").blur(checkPwd);
 $("#name").blur(checkName);
 $("#birthday").blur(checkBirth);
 ```
-
 验证代码
-
 ```js
 //验证用户名
 function checkUname(){
@@ -229,13 +193,9 @@ function checkBirth(){
     return true;
 }
 ```
-
 ##### 用户名合法性
-
 用户名通过验证要发送异步Ajax请求-从后台验证用户名是否重复
-
 ###### 数据层-UserMapper.java
-
 ```java
 /**
  * 根据用户名查询该用户
@@ -243,15 +203,11 @@ function checkBirth(){
 @Select("select * from tab_user where username=#{username}")
 User selectByUname(String username);
 ```
-
 ###### 业务层接口-UserService.java
-
 ```java
 boolean checkUname(String username);
 ```
-
 ###### 业务层实现-在UserServiceImpl.java中重写以下方法
-
 ```java
 @Override
 public boolean checkUname(String username) {
@@ -263,9 +219,7 @@ public boolean checkUname(String username) {
     }
 }
 ```
-
 ###### 控制层-UserController.java
-
 ```java
 /**
  * 验证用户名是否重复
@@ -281,9 +235,7 @@ public String checkUserName(String username) {
     }
 }
 ```
-
 ###### 表示层-在register.jsp的验证用户名中发送ajax请求部分
-
 ```js
 //发送ajax请求
 $.post("checkUname.do",{"usernane":uname},function(res){
@@ -301,17 +253,12 @@ $.post("checkUname.do",{"usernane":uname},function(res){
     }
 })
 ```
-
 ##### 保存数据
-
 ###### 页面情况-register.jsp
-
 ```html
 <form id="registerForm" action="doReg.do" method="post">
 ```
-
 ###### 数据层-UserMapper.java
-
 ```java
 /**
  * 增加用户-点击注册，增加数据到数据库中
@@ -321,9 +268,7 @@ $.post("checkUname.do",{"usernane":uname},function(res){
  */
 int addUser(User user);
 ```
-
 ###### 映射文件-/TravelProject/src/com/zk/dao/UserMapper.xml
-
 ```xml
 <!-- 增加用户|注册 -->
 <insert id="addUser" useGeneratedKeys="true" keyProperty="uid">
@@ -332,9 +277,7 @@ int addUser(User user);
     values(#{username},#{password},#{name},#{birthday},#{sex},#{telephone},#{email},#{status},#{code})
 </insert>
 ```
-
 ###### 业务层接口-/TravelProject/src/com/zk/service/UserService.java
-
 ```java
 /**
  * 只是关心是否增加成功，不关心是如何增加的
@@ -343,9 +286,7 @@ int addUser(User user);
  */
 boolean registerUser(User user);
 ```
-
 ###### 业务层实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
-
 ```java
 @Transactional
 public boolean registerUser(User user) {
@@ -360,9 +301,7 @@ public boolean registerUser(User user) {
     return false;
 }
 ```
-
 ###### 控制层-/TravelProject/src/com/zk/controller/UserController.java
-
 ```java
 /**
  * 注册功能
@@ -385,9 +324,7 @@ public ModelAndView doReg(User user) {
     return mv;
 }
 ```
-
 ##### 注册失败页面-在/TravelProject/WebContent/WEB-INF/jsp/register.jsp页面注册按钮下
-
 ```html
 <!-- 提示信息 -->
 <tr>
@@ -397,22 +334,16 @@ public ModelAndView doReg(User user) {
     </td>
 </tr>
 ```
-
 #### 3.邮件处理
-
 ##### 邮箱设置-/TravelProject/src/com/zk/utils/MailUtils.java
-
 例如：登录自己申请的QQ邮箱，在”设置-账户-POP3/IMAP/SMTP/Exchange/CardDAV/CalDAV服务中开启POP3/SMTP服务“；然后在MailUtils中设置自己的邮箱账号和密码(授权码)。
-
 ```java
 // 发件人邮箱地址-一般为企业邮箱
 private static final String USER = "xxx@qq.com";
 // 如果是qq邮箱使用客户端授权码，163邮箱的话就是开启客户端授权码
 private static final String PASSWORD = "xxx";
 ```
-
 ##### 发送邮件-在/TravelProject/src/com/zk/service/impl/UserServiceImpl.java中添加邮件发送代码
-
 ```java
 @Transactional
 public boolean registerUser(User user) {
@@ -432,11 +363,8 @@ public boolean registerUser(User user) {
     return false;
 }
 ```
-
 #### 4.邮件激活
-
 ##### 数据层-/TravelProject/src/com/zk/dao/UserMapper.java
-
 ```java
 /**
  * 根据激活码查询用户
@@ -446,7 +374,6 @@ public boolean registerUser(User user) {
  */
 @Select("select * from tab_user where code=#{code}")
 User selectByCode(String code);
-
 /**
  * 更新用户信息
  * 
@@ -455,9 +382,7 @@ User selectByCode(String code);
  */
 int updateUser(User user);
 ```
-
 ##### 映射文件-/TravelProject/src/com/zk/dao/UserMapper.xml
-
 ```xml
 <!-- 更新用户信息 -->
 <update id="updateUser" parameterType="user">
@@ -476,9 +401,7 @@ int updateUser(User user);
     where uid=#{uid}
 </update>
 ```
-
 ##### 业务接口-/TravelProject/src/com/zk/service/UserService.java
-
 ```java
 /**
  * 激活用户
@@ -488,9 +411,7 @@ int updateUser(User user);
  */
 boolean activeUser(String code);
 ```
-
 ##### 业务实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
-
 ```java
 @Transactional
 public boolean activeUser(String code) {
@@ -509,9 +430,7 @@ public boolean activeUser(String code) {
     return false;
 }
 ```
-
 ##### 控制层
-
 ```java
 /**
  * 用户激活；激活成功-去登陆URL； 激活成功-给其提示信息（激活失败，请联系管理员）
@@ -534,9 +453,7 @@ private void activeUser(String code, HttpServletResponse res) throws IOException
     res.getWriter().write(msg);
 }
 ```
-
 ##### 激活成功去登录页面
-
 ```java
 /**
  * 去登录页面
@@ -548,25 +465,15 @@ public String toLoginPage() {
     return "login";
 }
 ```
-
 #### 5.用户登录
-
 ##### 页面验证
-
 ###### 验证规则
-
 用户名：由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
-
 密码：由6到15个字母、数字、下划线组成，不符合规则-边框变为红实线并给其提示，否则清空边框及提示信息
-
 ###### 验证时机
-
 用户点击提交时验证
-
 离开焦点时验证
-
 ###### 验证实现
-
 ```js
 <script type="text/javascript">
     $(function(){
@@ -615,11 +522,8 @@ function checkPwd(){
 }
 </script>
 ```
-
 ##### 登录实现
-
 ###### 数据接口-/TravelProject/src/com/zk/dao/UserMapper.java
-
 ```java
 /**
  * 登录方法
@@ -631,24 +535,18 @@ function checkPwd(){
 @Select("select * from tab_user where username=#{username} and password=#{password}")
 User login(@Param("username") String username, @Param("password") String password);
 ```
-
 ###### 业务接口-/TravelProject/src/com/zk/service/UserService.java
-
 ```java
 User login(String username, String password);
 ```
-
 ###### 业务实现-/TravelProject/src/com/zk/service/impl/UserServiceImpl.java
-
 ```java
 @Override
 public User login(String username, String password) {
     return uMapper.login(username, password);
 }
 ```
-
 ###### 控制层-/TravelProject/src/com/zk/controller/UserController.java
-
 ```java
 /**
  * 用户登录
@@ -680,33 +578,23 @@ public ModelAndView login(String username, String password, HttpServletRequest r
     return mv;
 }
 ```
-
 ##### 登录页面信息错误提示-/TravelProject/WebContent/WEB-INF/jsp/login.jsp
-
 ```jsp
 <!--登录错误提示消息-->
 <div id="errorMsg" class="alert alert-danger" >${msg==null?'':msg }</div>
 ```
-
 ##### 首页用户信息显示-/TravelProject/WebContent/WEB-INF/jsp/header.jsp
-
 ```jsp
 <!-- 此user为UserController.java中登录成功后将用户信息保存到session对象当中的user -->
 <span>欢迎，${sessionScope.user.name==null?"游客":sessionScope.user.name}</span>
 ```
-
 #### 6.用户退出
-
 退出本质-清空Session
-
 ##### 页面连接-/TravelProject/WebContent/WEB-INF/jsp/header.jsp
-
 ```jsp
 <a href="toLogout.do">退出</a>
 ```
-
 ##### 控制层代码-/TravelProject/src/com/zk/controller/UserController.java
-
 ```java
 /**
  * 用户退出
@@ -721,13 +609,9 @@ public ModelAndView logout(HttpServletRequest req) {
     return new ModelAndView("forward:indexPage.do");
 }
 ```
-
 ### （6）项目总结
-
 ## 3、说明
-
 ### 项目中注意事项
-
 ```xml
 转自：https://my.oschina.net/kkrgwbj/blog/734530
 	通常我们的项目有时候是以jar包的形式发布出去，但是此时如果你直接使用lo4j2的api的话，相当于别人依赖你的jar的项目也必须加入log4j2的jar包。这样是高度耦合的。我们不建议这样使用，log4j2官方给出了适配slf4j，我们只需要在项目中加入以下依赖：
@@ -745,13 +629,8 @@ public ModelAndView logout(HttpServletRequest req) {
     <version>1.7.30</version>
 </dependency>
 ```
-
-
-
 ## 4、出错
-
 ### 运行项目出错，控制台无错误输出
-
 ```xml
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -762,19 +641,19 @@ public ModelAndView logout(HttpServletRequest req) {
 
 注意：namespace="com.zk.dao.UserMapper"要和包名对应，出错为namespace="com.SSM.dao.UserMapper"，而包名为"com.zk.dao.UserMapper"
 ```
-
-
-
+### 解决idea出现Error:(8, 26) java: 程序包javax.servlet.http不存在
+```xml
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.5</version>
+</dependency>
+```
 ## 5、附加
-
 ### sql教程
-
 https://www.runoob.com/sql/sql-tutorial.html
-
 https://www.1keydata.com/cn/sql/
-
 ### 临时邮箱
-
 ```html
 发
 https://www.guerrillamail.com/zh/compose
@@ -798,9 +677,7 @@ http://www.yopmail.com/zh/
 http://www.jetable.org/zh/index 
 http://www.mailinator.com
 ```
-
 ### 临时手机号
-
 ```html
 转自：https://mp.weixin.qq.com/s?src=11&timestamp=1590563602&ver=2363&signature=2Pvmomd4d5SKLNZwUNPrpTbD9iQ0gz*bUPmjDVXiQWXzvZ--XxM*-taCEF*tS3u8MB9exNCM4pCCfbXZMzyU-RT2d0SnLpqkPWWjzYziAtlrhhgAXCbx6u8O9-nxK7Ln&new=1
 国内免费临时手机号：
@@ -831,55 +708,30 @@ http://www.mailinator.com
 18、http://receive-sms-online.com/
 19、http://sms.sel
 ```
-
 ### 正则表达式(Regular Expression)，常简称为regex、regexp
-
 #### 软件
-
 **regexBuilder：**https://github.com/ScottLouvau/RegexBuilder
-
 **Regex Match Tracer：**http://www.regexlab.com/
-
 #### 教程
-
 **菜鸟教程：**https://www.runoob.com/regexp/regexp-tutorial.html
-
 **简单教程：**https://www.twle.cn/l/yufei/regexp/regexp-basic-index.html
-
 **regular：**http://www.regular-expressions.info/
-
 **MDN：**https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Guide/Regular_Expressions
-
 **微软：**https://docs.microsoft.com/zh-cn/dotnet/standard/base-types/regular-expressions
-
 **w3cschool：**https://www.w3cschool.cn/zhengzebiaodashi/regexp-tutorial.html
-
 #### 在线生成
-
 **在线工具：**https://tool.lu/regex/
-
 **regex101：**https://regex101.com/
-
 **Regulex：**https://jex.im/regulex/
-
 **菜鸟教程：**http://c.runoob.com/front-end/854
-
 **JSON在线：**https://www.sojson.com/regex/generate
-
 **脚本之家：**http://tools.jb51.net/regex
-
 **Jsons**http://www.jsons.cn/regcode/
-
 **站长之家：**http://tool.chinaz.com/regex/
-
 **开源中国社区：**https://tool.oschina.net/regex/
-
 **debuggex：**https://www.debuggex.com/
-
 **w3cschool：**https://www.w3cschool.cn/zhengzebiaodashi/regexp-tutorial.html
-
 ### web.xml
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -937,15 +789,10 @@ http://www.mailinator.com
 	</filter-mapping>
 </web-app>
 ```
-
 ### MyBatis
-
 #### 官网：https://mybatis.org/mybatis-3/
-
 #### 中文官网：https://mybatis.org/mybatis-3/zh/index.html
-
 #### mybatis.xml头文件：https://mybatis.org/mybatis-3/getting-started.html
-
 ```xml
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -953,9 +800,7 @@ http://www.mailinator.com
 <mapper namespace="com.ssm.dao.UserMapper">
 </mapper>
 ```
-
 #### mybatis-config.xml头文件：https://mybatis.org/mybatis-3/getting-started.html
-
 ```xml
 官网版
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -1006,17 +851,11 @@ http://www.mailinator.com
 	</mappers>
 </configuration>
 ```
-
 ### Spring
-
 #### 官网：https://spring.io/
-
 #### Spring-Framework：https://spring.io/projects/spring-framework
-
 #### spring-config.xml头文件
-
 https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/core.html#xsd-schemas-aop
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -1060,9 +899,7 @@ https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/cor
 		transaction-manager="txManager" />	
 </beans>
 ```
-
 #### springmvc-config.xml头文件：https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/web.html#mvc-config
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
@@ -1089,11 +926,8 @@ https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/cor
 		p:prefix="/WEB-INF/jsp/" p:suffix=".jsp" />
 </beans>
 ```
-
 ### 用到的依赖
-
 #### 依赖官网：
-
 ```xml
 <!-- mysql依赖 -->
 <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -1205,6 +1039,13 @@ https://docs.spring.io/spring/docs/5.3.0-SNAPSHOT/spring-framework-reference/cor
 	<groupId>com.sun.mail</groupId>
 	<artifactId>javax.mail</artifactId>
 	<version>1.6.2</version>
+</dependency>
+
+<!--解决idea出现Error:(8, 26) java: 程序包javax.servlet.http不存在-->
+<dependency>
+    <groupId>javax.servlet</groupId>
+    <artifactId>servlet-api</artifactId>
+    <version>2.5</version>
 </dependency>
 ```
 

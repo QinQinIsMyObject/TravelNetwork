@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.zk.controller;
 
@@ -15,15 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CommonController {
 
-	/**
-	 * 测试去首页
-	 * 
-	 * @return
-	 */
-	@RequestMapping("/indexPage.do")
-	public String toIndexPage() {
-		return "index";
-
-	}
+    /**
+     * 测试去首页
+     *
+     * @return
+     */
+    @RequestMapping("/indexPage.do")
+    public String toIndexPage() {
+        return "index";
+    }
 
 }

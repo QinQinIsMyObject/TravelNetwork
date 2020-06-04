@@ -1,30 +1,45 @@
 <!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zk.dao.UserMapper">
+    <!-- 增加用户|注册 -->
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="uid">
+        insert into tab_user(username, password, name, birthday, sex, telephone, email, status, code)
+        values (#{username}, #{password}, #{name}, #{birthday}, #{sex}, #{telephone}, #{email}, #{status}, #{code})
+    </insert>
 
-	<!-- 增加用户|注册 -->
-	<insert id="addUser" useGeneratedKeys="true" keyProperty="uid">
-		insert into
-		tab_user(username,password,name,birthday,sex,telephone,email,status,code)
-		values(#{username},#{password},#{name},#{birthday},#{sex},#{telephone},#{email},#{status},#{code})
-	</insert>
-
-	<!-- 更新用户信息 -->
-	<update id="updateUser" parameterType="user">
-		update tab_user
-		<set>
-			<if test="username!=null and username!=''">username=#{username},</if>
-			<if test="password!=null and password!=''">password=#{password},</if>
-			<if test="name!=null and name!=''">name=#{name},</if>
-			<if test="birthday!=null and birthday!=''">birthday=#{birthday},</if>
-			<if test="sex!=null and sex!=''">sex=#{sex},</if>
-			<if test="telephone!=null and telephone!=''">telephone=#{telephone},</if>
-			<if test="email!=null and email!=''">email=#{email},</if>
-			<if test="status!=null and status!=''">status=#{status},</if>
-			<if test="code!=null and code!=''">code=#{code}</if>
-		</set>
-		where uid=#{uid}
-	</update>
-
+    <!-- 更新用户信息 -->
+    <update id="updateUser" parameterType="user">
+        update tab_user
+        <set>
+            <if test="username!=null and username!=''">
+                username=#{username},
+            </if>
+            <if test="password!=null and password!=''">
+                password=#{password},
+            </if>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="birthday!=null and birthday!=''">
+                birthday=#{birthday},
+            </if>
+            <if test="sex!=null and sex!=''">
+                sex=#{sex},
+            </if>
+            <if test="telephone!=null and telephone!=''">
+                telephone=#{telephone},
+            </if>
+            <if test="email!=null and email!=''">
+                email=#{email},
+            </if>
+            <if test="status!=null and status!=''">
+                status=#{status},
+            </if>
+            <if test="code!=null and code!=''">
+                code=#{code}
+            </if>
+        </set>
+        where uid=#{uid}
+    </update>
 </mapper>
