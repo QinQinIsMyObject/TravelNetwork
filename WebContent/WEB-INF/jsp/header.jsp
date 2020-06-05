@@ -46,15 +46,28 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function () {
+            $.post('cgList.do', function (res) {
+                var html = "";
+                for (var i = 0; i < res.length; i++) {
+                    html += "<a href='#'>" + res[i].cname + "</a>"
+                }
+                //将遍历出来的超链接放到li中
+                $('.cg').html(html);
+            })
+        });
+    </script>
 </header>
 <!-- 头部 end -->
 <!-- 首页导航 -->
 <div class="navitem">
     <ul class="nav" id="category">
         <li class="nav-active"><a href="index.html">首页</a></li>
-        <c:forEach items="${cglist}" var="c">
+        <%--<c:forEach items="${cglist}" var="c">
             <li><a href="routelist?cid=${c.cid}">${c.cname}</a></li>
-        </c:forEach>
+        </c:forEach>--%>
+        <li class="cg"></li>
         <li><a href="favoriterank.html">收藏排行榜</a></li>
     </ul>
 </div>

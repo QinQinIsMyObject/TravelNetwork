@@ -3,18 +3,16 @@
  */
 package com.zk.controller;
 
-import java.io.IOException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.zk.entity.User;
+import com.zk.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.zk.entity.User;
-import com.zk.service.UserService;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Shieh
@@ -98,7 +96,7 @@ public class UserController {
      * @throws IOException
      */
     @RequestMapping("/activeMail.do")
-    private void activeUser(String code, HttpServletResponse res) throws IOException {
+    public void activeUser(String code, HttpServletResponse res) throws IOException {
         boolean flag = uService.activeUser(code);
         // 提示信息
         String msg = null;

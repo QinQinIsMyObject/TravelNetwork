@@ -609,6 +609,80 @@ public ModelAndView logout(HttpServletRequest req) {
     return new ModelAndView("forward:indexPage.do");
 }
 ```
+#### 导航条分类
+##### 数据接口-src/com/zk/dao/CategoryMapper.java
+```java
+@Select("select cid,cname from tab_category")
+List<Category> selectAllCategory();
+```
+##### 映射文件-src/com/zk/dao/CategoryMapper.xml
+```xml
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zk.dao.CategoryMapper">
+</mapper>
+```
+##### 业务接口-src/com/zk/service/CategoryService.java
+```java
+List<Category> selectAllCategory();
+```
+##### 业务实现
+```java
+@Autowired
+private CategoryMapper cMapper;
+
+@Override
+public List<Category> selectAllCategory() {
+    return cMapper.selectAllCategory();
+}
+```
+##### 控制层-src/com/zk/controller/CategoryController.java
+```java
+@Autowired
+private CategoryService categoryService;
+
+/**
+ * List可以返回普通的String，可以返回对象，也可以返回list集合包括map
+ *
+ * @return
+ */
+@RequestMapping("/cgList.do")
+@ResponseBody
+public List<Category> getCategoryList() {
+    List<Category> categoryList = categoryService.selectAllCategory();
+    if (categoryList != null) {
+        return categoryList;
+    }
+    return null;
+}
+```
+##### 页面改造-WebContent/WEB-INF/jsp/header.jsp
+```jsp
+<!-- 首页导航 -->
+<div class="navitem">
+    <ul class="nav" id="category">
+        <li class="nav-active"><a href="index.html">首页</a></li>
+        <li class="cg"></li>
+        <li><a href="favoriterank.html">收藏排行榜</a></li>
+    </ul>
+</div>
+```
+##### Ajax请求
+```js
+<script type="text/javascript">
+    $(function () {
+    $.post('cgList.do', function (res) {
+        var html = "";
+        for (var i = 0; i < res.length; i++) {
+            html += "<a href='#'>" + res[i].cname + "</a>"
+        }
+        //将遍历出来的超链接放到li中
+        $('.cg').html(html);
+    })
+});
+</script>
+```
 ### （6）项目总结
 ## 3、说明
 ### 项目中注意事项
