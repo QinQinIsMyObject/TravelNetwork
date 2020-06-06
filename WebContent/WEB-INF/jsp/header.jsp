@@ -27,11 +27,11 @@
                 <a href="/"><img src="images/logo.jpg" alt=""></a>
             </div>
             <div class="search">
-                <form action="routelist" method="post">
+                <form action="routeList.do" method="post">
                     <input name="rname" id="rname" type="text" placeholder="请输入路线名称" class="search_input"
                            value="${rname==''?'':rname}">
-                    <input type="hidden" name="cid" value="${cid}"/>
-                    <input type="hidden" name="pageNo" value="${pno}"/>
+                    <%-- <input type="hidden" name="cid" value="${cid}"/>
+                    <input type="hidden" name="pageNo" value="${pno}"/>--%>
                     <input type="submit" value="搜索" class="search-button"/>
                 </form>
             </div>
@@ -51,7 +51,7 @@
             $.post('cgList.do', function (res) {
                 var html = "";
                 for (var i = 0; i < res.length; i++) {
-                    html += "<a href='#'>" + res[i].cname + "</a>"
+                    html += "<a href='routeList.do?cid=" + res[i].cid + "'>" + res[i].cname + "</a>"
                 }
                 //将遍历出来的超链接放到li中
                 $('.cg').html(html);

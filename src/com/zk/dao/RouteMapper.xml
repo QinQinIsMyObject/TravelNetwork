@@ -1,0 +1,17 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zk.dao.RouteMapper">
+    <!--根据分类id或者线路名称进行模糊查询-->
+    <select id="selectRouteByCidOrRname" resultType="route">
+        select rname,price,routeIntroduce,rimage from tab_route
+        <trim prefix="where" prefixOverrides="and || or">
+            <if test="cid!=null">
+                cid=#{cid}
+            </if>
+            <if test="rname!=null and rname!=''">
+                and rname like concat('%',#{rname},'%')
+            </if>
+        </trim>
+    </select>
+</mapper>
