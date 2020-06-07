@@ -15,4 +15,6 @@ import java.util.List;
 public interface RouteService {
 
     List<Route> selectRouteByCidOrRname(Integer cid, String rname);
+
+    Route selectByRid(Integer rid);
 }

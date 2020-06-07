@@ -610,7 +610,8 @@ public ModelAndView logout(HttpServletRequest req) {
     return new ModelAndView("forward:indexPage.do");
 }
 ```
-#### 导航条分类
+#### 7.导航条分类
+
 ##### 数据接口-src/com/zk/dao/CategoryMapper.java
 ```java
 @Select("select cid,cname from tab_category")
@@ -664,7 +665,7 @@ public List<Category> getCategoryList() {
 <div class="navitem">
     <ul class="nav" id="category">
         <li class="nav-active"><a href="index.html">首页</a></li>
-        <li class="cg"></li>
+        <li class='cg'></li>
         <li><a href="favoriterank.html">收藏排行榜</a></li>
     </ul>
 </div>
@@ -684,7 +685,8 @@ public List<Category> getCategoryList() {
 });
 </script>
 ```
-#### 分类数据模糊查
+#### 8.分类数据模糊查
+
 ##### 页面改造-WebContent/WEB-INF/jsp/header.jsp
 ```jsp
 <form action="routeList.do" method="post">
@@ -773,6 +775,7 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
 }
 ```
 ##### 页面展示-WebContent/WEB-INF/jsp/route_list.jsp
+
 ```jsp
 <ul>
     <c:forEach items="${rlist}" var="r">
@@ -797,7 +800,151 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
     </c:forEach>
 </ul>
 ```
+##### 百度分页效果分析
+
+```
+1、判断上页和下页的形成条件
+	上一页：当前页面大于1；
+	下一页：当前页码大于1且当前页码小于总页数。
+2、上一页和下一页中间遍历部分
+	总页数小于等于10；
+	总页数大于10时；
+	当前页面小于等于6和大于6是的情况。
+```
+
+###### 分页效果展示-WebContent/WEB-INF/jsp/route_list.jsp
+
+```jsp
+<div class="page_num_inf">
+    <i></i> 共 <span>${page.pages}</span>页<span>${page.total}</span>条
+</div>
+<div class="pageNum">
+    <ul>
+        <c:if test="${pno > 1}">
+            <li class="threeword"><a
+                                     href="routeList.do?pno=${page.prePage}&cid=${cid}&rname=${rname}">&lt;上一页</a></li>
+        </c:if>
+        <c:choose>
+            <c:when test="${page.pages<=10}">
+                <c:forEach begin="1" end="${page.pages}" var="i">
+                    <c:if test="${pno==i}">
+                        <li class="curPage"><a
+                                               href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                    </c:if>
+                    <c:if test="${pno!=i}">
+                        <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                    </c:if>
+                </c:forEach>
+            </c:when>
+            <c:when test="${page.pages>10}">
+                <c:if test="${pno<=6}">
+                    <c:forEach begin="1" end="10" var="i">
+                        <c:if test="${pno==i}">
+                            <li class="curPage"><a
+                                                   href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                        </c:if>
+                        <c:if test="${pno!=i}">
+                            <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+                <c:if test="${pno>6}">
+                    <c:forEach begin="${pno-5}"
+                               end="${(pno+4)>page.pages?page.pages:(pno+4)}" var="i">
+                        <c:if test="${pno==i}">
+                            <li class="curPage"><a
+                                                   href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                        </c:if>
+                        <c:if test="${pno!=i}">
+                            <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+            </c:when>
+        </c:choose>
+        <c:if test="${pno>=1 && pno<page.pages}">
+            <li class="threeword"><a
+                                     href="routeList.do?pno=${page.nextPage}&cid=${cid}&rname=${rname}">下一页&gt;</a></li>
+        </c:if>
+    </ul>
+</div>
+```
+
+#### 9.线路详情查询
+
+##### 功能分析
+
+```
+详情页的数据主要来自3张表：tab_route(线路表)、tab_route_img(线路图片表)、tab_seller(商家表)；
+线路表和商家表是一对一关系通过外键sid关联、线路表和线路图片表示一对多关系通过外键rid进行关联；
+以线路表为主，在映射文件当中配置一对一和一对多关系。
+```
+
+##### 数据接口-src/com/zk/dao/RouteMapper.java
+
+```java
+/**
+ * 根据线路id查询线路
+ * @param rid
+ * @return
+ */
+Route selectByRid(Integer rid);
+```
+
+##### 映射文件-src/com/zk/dao/RouteMapper.xml
+
+```xml
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zk.dao.RouteMapper">
+    <resultMap id="rResultMap" type="Route">
+        <id property="rid" column="rid"/>
+        <result property="rname" column="rname"/>
+        <result property="price" column="price"/>
+        <result property="routeIntroduce" column="routeIntroduce"/>
+        <result property="rflag" column="rflag"/>
+        <result property="rdate" column="rdate"/>
+        <result property="isThemeTour" column="isThemeTour"/>
+        <result property="count" column="count"/>
+        <result property="cid" column="cid"/>
+        <result property="rimage" column="rimage"/>
+        <result property="sid" column="sid"/>
+        <result property="sourceId" column="sourceId"/>
+        <!--一对一-->
+        <association property="seller" javaType="Seller">
+            <id property="sid" column="sid"/>
+            <result property="sname" column="sname"/>
+            <result property="address" column="address"/>
+            <result property="consphone" column="consphone"/>
+        </association>
+        <!--一对多-->
+        <collection property="routeImgList" ofType="RouteImg">
+            <id property="rgid" column="rgid"/>
+            <result property="rid" column="rid"/>
+            <result property="bigPic" column="bigPic"/>
+            <result property="smallPic" column="smallPic"/>
+        </collection>
+    </resultMap>
+    <!--根据线路id查询线路-->
+    <select id="selectByRid" resultMap="rResultMap">
+        select r.*, i.*, s.*
+        from tab_route r,
+             tab_route_img i,
+             tab_seller s
+        where r.rid = i.rid
+          and r.sid = s.sid
+          and r.rid = #{rid}
+    </select>
+</mapper>
+```
+
+
+
+
+
 ### （6）项目总结
+
 ## 3、说明
 ### 项目中注意事项
 ```xml

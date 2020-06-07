@@ -47,66 +47,63 @@
                                     <span>&yen;</span> <span>${r.price}</span> <span>起</span>
                                 </p>
                                 <p>
-                                    <a href="routeDetail?rid=${r.rid}">查看详情</a>
+                                    <a href="routeDetail.do?rid=${r.rid}">查看详情</a>
                                 </p>
                             </div>
                         </li>
                     </c:forEach>
                 </ul>
                 <div class="page_num_inf">
-                    <i></i> 共 <span>${pcount}</span>页<span>${tcount}</span>条
+                    <i></i> 共 <span>${page.pages}</span>页<span>${page.total}</span>条
                 </div>
                 <div class="pageNum">
                     <ul>
-                        <li><a href="routelist?pageNo=1&cid=${cid}&rname=${rname}">首页</a></li>
                         <c:if test="${pno > 1}">
                             <li class="threeword"><a
-                                    href="routelist?pageNo=${pno-1}&cid=${cid}&rname=${rname}">上一页</a></li>
+                                    href="routeList.do?pno=${page.prePage}&cid=${cid}&rname=${rname}">&lt;上一页</a></li>
                         </c:if>
                         <c:choose>
-                            <c:when test="${pcount<=10}">
-                                <c:forEach begin="1" end="${pcount}" var="i">
+                            <c:when test="${page.pages<=10}">
+                                <c:forEach begin="1" end="${page.pages}" var="i">
                                     <c:if test="${pno==i}">
                                         <li class="curPage"><a
-                                                href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                                href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                     </c:if>
                                     <c:if test="${pno!=i}">
-                                        <li><a href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                        <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                     </c:if>
                                 </c:forEach>
                             </c:when>
-                            <c:when test="${pcount>10}">
+                            <c:when test="${page.pages>10}">
                                 <c:if test="${pno<=6}">
                                     <c:forEach begin="1" end="10" var="i">
                                         <c:if test="${pno==i}">
                                             <li class="curPage"><a
-                                                    href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                                    href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                         </c:if>
                                         <c:if test="${pno!=i}">
-                                            <li><a href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                            <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
                                 <c:if test="${pno>6}">
                                     <c:forEach begin="${pno-5}"
-                                               end="${(pno+4)>pcount?pcount:(pno+4)}" var="i">
+                                               end="${(pno+4)>page.pages?page.pages:(pno+4)}" var="i">
                                         <c:if test="${pno==i}">
                                             <li class="curPage"><a
-                                                    href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                                    href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                         </c:if>
                                         <c:if test="${pno!=i}">
-                                            <li><a href="routelist?pageNo=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
+                                            <li><a href="routeList.do?pno=${i}&cid=${cid}&rname=${rname}">${i}</a></li>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
                             </c:when>
                         </c:choose>
-                        <c:if test="${pno>=1 && pno<pcount}">
+                        <c:if test="${pno>=1 && pno<page.pages}">
                             <li class="threeword"><a
-                                    href="routelist?pageNo=${pno+1}&cid=${cid}&rname=${rname}">下一页</a></li>
+                                    href="routeList.do?pno=${page.nextPage}&cid=${cid}&rname=${rname}">下一页&gt;</a></li>
                         </c:if>
-                        <li class="threeword"><a
-                                href="routelist?pageNo=${pcount}&cid=${cid}&rname=${rname}">末页</a></li>
                     </ul>
                 </div>
             </div>

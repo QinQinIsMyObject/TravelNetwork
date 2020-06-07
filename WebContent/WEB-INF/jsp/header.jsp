@@ -54,7 +54,7 @@
                     html += "<a href='routeList.do?cid=" + res[i].cid + "'>" + res[i].cname + "</a>"
                 }
                 //将遍历出来的超链接放到li中
-                $('.cg').html(html);
+                $(".cg").html(html);
             })
         });
     </script>
@@ -67,7 +67,7 @@
         <%--<c:forEach items="${cglist}" var="c">
             <li><a href="routelist?cid=${c.cid}">${c.cname}</a></li>
         </c:forEach>--%>
-        <li class="cg"></li>
+        <li class='cg'></li>
         <li><a href="favoriterank.html">收藏排行榜</a></li>
     </ul>
 </div>

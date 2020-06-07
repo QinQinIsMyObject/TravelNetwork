@@ -26,4 +26,9 @@ public class RouteServiceImpl implements RouteService {
     public List<Route> selectRouteByCidOrRname(Integer cid, String rname) {
         return routeMapper.selectRouteByCidOrRname(cid, rname);
     }
+
+    @Override
+    public Route selectByRid(Integer rid) {
+        return routeMapper.selectByRid(rid);
+    }
 }

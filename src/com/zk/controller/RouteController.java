@@ -3,6 +3,8 @@ package com.zk.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.zk.entity.Route;
+import com.zk.entity.RouteImg;
+import com.zk.entity.Seller;
 import com.zk.service.RouteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -42,6 +44,26 @@ public class RouteController {
             modelAndView.addObject("cid", cid);
             //逻辑视图名
             modelAndView.setViewName("route_list");
+            return modelAndView;
+        }
+        return null;
+    }
+
+    @RequestMapping("/routeDetail.do")
+    public ModelAndView routeDetail(@RequestParam(name = "rid", required = true, defaultValue = "") Integer rid) {
+        ModelAndView modelAndView = new ModelAndView();
+        Route route = routeService.selectByRid(rid);
+        if (route != null) {
+            List<RouteImg> imgList = route.getRouteImgList();
+            Seller seller = route.getSeller();
+            //线路对象
+            modelAndView.addObject("rt", route);
+            //图片集合
+            modelAndView.addObject("imgList", imgList);
+            //商家
+            modelAndView.addObject("sl", seller);
+            //去线路详情页面
+            modelAndView.setViewName("route_detail");
             return modelAndView;
         }
         return null;

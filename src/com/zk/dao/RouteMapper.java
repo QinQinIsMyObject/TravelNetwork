@@ -24,4 +24,10 @@ public interface RouteMapper {
      */
     List<Route> selectRouteByCidOrRname(@Param("cid") Integer cid, @Param("rname") String rname);
 
+    /**
+     * 根据线路id查询线路
+     * @param rid
+     * @return
+     */
+    Route selectByRid(Integer rid);
 }

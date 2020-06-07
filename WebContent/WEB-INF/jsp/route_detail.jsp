@@ -26,12 +26,11 @@
     <div class="prosum_box">
         <dl class="prosum_left">
             <dt>
-                <img alt="" class="big_img"
-                     src="http://www.jinmalvyou.com/Public/uploads/goods_img/img_size4/201703/m49788843d72171643297ccc033d9288ee.jpg">
+                <img alt="" class="big_img" src="${rt.rimage}">
             </dt>
             <dd>
                 <a class="up_img up_img_disable"></a>
-                <c:forEach items="${rt.routeImgList}" var="i" varStatus="v">
+                <c:forEach items="${imgList}" var="i" varStatus="v">
                     <c:if test="${v.count>4}">
                         <a title="" class="little_img" data-bigpic="${i.bigPic}" style="display:none;">
                             <img src="${i.smallPic}">
@@ -50,9 +49,9 @@
             <p class="pros_title">${rt.rname}</p>
             <p class="hot">${rt.routeIntroduce}</p>
             <div class="pros_other">
-                <p>经营商家 ：${rt.seller.sname}</p>
-                <p>咨询电话 : ${rt.seller.consphone}</p>
-                <p>地址 ：${rt.seller.address}</p>
+                <p>经营商家 ：${sl.sname}</p>
+                <p>咨询电话 : ${sl.consphone}</p>
+                <p>地址 ：${sl.address}</p>
             </div>
             <div class="pros_price">
                 <p class="price"><strong>¥${rt.price}</strong><span>起</span></p>

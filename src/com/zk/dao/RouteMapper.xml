@@ -2,9 +2,37 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zk.dao.RouteMapper">
+    <resultMap id="rResultMap" type="route">
+        <id property="rid" column="rid"/>
+        <result property="rname" column="rname"/>
+        <result property="price" column="price"/>
+        <result property="routeIntroduce" column="routeIntroduce"/>
+        <result property="rflag" column="rflag"/>
+        <result property="rdate" column="rdate"/>
+        <result property="isThemeTour" column="isThemeTour"/>
+        <result property="count" column="count"/>
+        <result property="cid" column="cid"/>
+        <result property="rimage" column="rimage"/>
+        <result property="sid" column="sid"/>
+        <result property="sourceId" column="sourceId"/>
+        <!--一对一-->
+        <association property="seller" javaType="seller">
+            <id property="sid" column="sid"/>
+            <result property="sname" column="sname"/>
+            <result property="address" column="address"/>
+            <result property="consphone" column="consphone"/>
+        </association>
+        <!--一对多-->
+        <collection property="routeImgList" ofType="routeImg">
+            <id property="rgid" column="rgid"/>
+            <result property="rid" column="rid"/>
+            <result property="bigPic" column="bigPic"/>
+            <result property="smallPic" column="smallPic"/>
+        </collection>
+    </resultMap>
     <!--根据分类id或者线路名称进行模糊查询-->
     <select id="selectRouteByCidOrRname" resultType="route">
-        select rname,price,routeIntroduce,rimage from tab_route
+        select rid,rname,price,routeIntroduce,rimage from tab_route
         <trim prefix="where" prefixOverrides="and || or">
             <if test="cid!=null">
                 cid=#{cid}
@@ -13,5 +41,15 @@
                 and rname like concat('%',#{rname},'%')
             </if>
         </trim>
+    </select>
+    <!--根据线路id查询线路-->
+    <select id="selectByRid" resultMap="rResultMap">
+        select r.*, i.*, s.*
+        from tab_route r,
+             tab_route_img i,
+             tab_seller s
+        where r.rid = i.rid
+          and r.sid = s.sid
+          and r.rid = #{rid}
     </select>
 </mapper>
