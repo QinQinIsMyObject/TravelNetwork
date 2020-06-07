@@ -36,6 +36,7 @@ public class RouteController {
         if (routeList != null) {
             modelAndView.addObject("rlist", routeList);
             modelAndView.addObject("rname", rname);
+            //当前页码
             modelAndView.addObject("pno", pno);
             modelAndView.addObject("page", pageInfo);
             modelAndView.addObject("cid", cid);

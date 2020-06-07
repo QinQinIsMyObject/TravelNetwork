@@ -1,4 +1,5 @@
 # 旅游网
+
 ## 1、主要功能
 实现旅游网
 ## 2、主要知识点
@@ -678,10 +679,123 @@ public List<Category> getCategoryList() {
             html += "<a href='#'>" + res[i].cname + "</a>"
         }
         //将遍历出来的超链接放到li中
-        $('.cg').html(html);
+        $(".cg").html(html);
     })
 });
 </script>
+```
+#### 分类数据模糊查
+##### 页面改造-WebContent/WEB-INF/jsp/header.jsp
+```jsp
+<form action="routeList.do" method="post">
+    <input name="rname" id="rname" type="text" placeholder="请输入路线名称" class="search_input"
+           value="${rname==''?'':rname}">
+    <input type="submit" value="搜索" class="search-button"/>
+</form>
+```
+###### 分类超链接改造
+```jsp
+for (var i = 0; i < res.length; i++) {
+	html += "<a href='routeList.do?cid=" + res[i].cid + "'>" + res[i].cname + "</a>"
+}
+```
+##### 数据接口-src/com/zk/dao/RouteMapper.java
+```java
+/**
+ * 查询
+ * @param cid
+ * @param rid
+ * @return
+ */
+List<Route> selectRouteByCidOrRname(@Param("cid") Integer cid, @Param("rname") String rname);
+```
+##### 映射文件-src/com/zk/dao/RouteMapper.xml
+```xml
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zk.dao.RouteMapper">
+    <!--根据分类id或者线路名称进行模糊查询-->
+    <select id="selectRouteByCidOrRname" resultType="route">
+        select rname,price,routeIntroduce,rimage from tab_route
+        <trim prefix="where" prefixOverrides="and || or">
+            <if test="cid!=null">
+                cid=#{cid}
+            </if>
+            <if test="rname!=null and rname!=''">
+                and rname like concat('%',#{rname},'%')
+            </if>
+        </trim>
+    </select>
+</mapper>
+```
+##### 业务接口-src/com/zk/service/RouteService.java
+```java
+List<Route> selectRouteByCidOrRname(Integer cid, String rname);
+```
+##### 业务实现-src/com/zk/service/impl/RouteServiceImpl.java
+```java
+@Autowired
+private RouteMapper routeMapper;
+
+@Override
+public List<Route> selectRouteByCidOrRname(Integer cid, String rname) {
+    return routeMapper.selectRouteByCidOrRname(cid, rname);
+}
+```
+##### 控制层-src/com/zk/controller/RouteController.java
+```java
+@Autowired
+private RouteService routeService;
+
+@RequestMapping("/routeList.do")
+public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, defaultValue = "1") Integer pno,
+                                 @RequestParam(name = "cid", required = true, defaultValue = "5") Integer cid,
+                                 @RequestParam(name = "rname", required = true, defaultValue = "") String rname) {
+    ModelAndView modelAndView = new ModelAndView();
+    //开始分页
+    PageHelper.startPage(pno, 10);
+    List<Route> routeList = routeService.selectRouteByCidOrRname(cid, rname);
+    //分好页的数据
+    PageInfo<Route> pageInfo = new PageInfo<Route>(routeList);
+    if (routeList != null) {
+        modelAndView.addObject("rlist", routeList);
+        modelAndView.addObject("rname", rname);
+        //当前页码
+        modelAndView.addObject("pno", pno);
+        modelAndView.addObject("page", pageInfo);
+        modelAndView.addObject("cid", cid);
+        //逻辑视图名
+        modelAndView.setViewName("route_list");
+        return modelAndView;
+    }
+    return null;
+}
+```
+##### 页面展示-WebContent/WEB-INF/jsp/route_list.jsp
+```jsp
+<ul>
+    <c:forEach items="${rlist}" var="r">
+        <li>
+            <div class="img">
+                <img width="299px" src="${r.rimage}" alt="">
+            </div>
+            <div class="text1">
+                <p>${r.rname}</p>
+                <br/>
+                <p>${r.routeIntroduce}</p>
+            </div>
+            <div class="price">
+                <p class="price_num">
+                    <span>&yen;</span> <span>${r.price}</span> <span>起</span>
+                </p>
+                <p>
+                    <a href="routeDetail?rid=${r.rid}">查看详情</a>
+                </p>
+            </div>
+        </li>
+    </c:forEach>
+</ul>
 ```
 ### （6）项目总结
 ## 3、说明
