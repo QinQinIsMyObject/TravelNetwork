@@ -1,46 +1,38 @@
 package com.zk.entity;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 /**
  * 收藏实体类
  */
 @SuppressWarnings("serial")
 public class Favorite implements Serializable {
-    private Route route; // 旅游线路对象
-    private String date; // 收藏时间
-    private User user; // 所属用户
+    private Integer rid;
+    private Date date;
+    private Integer uid;
 
-    public Favorite() {
+    public Integer getRid() {
+        return rid;
     }
 
-    public Favorite(Route route, String date, User user) {
-        this.route = route;
-        this.date = date;
-        this.user = user;
+    public void setRid(Integer rid) {
+        this.rid = rid;
     }
 
-    public Route getRoute() {
-        return route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
-    }
-
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
-    public User getUser() {
-        return user;
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUid(Integer uid) {
+        this.uid = uid;
     }
 }

@@ -57,13 +57,37 @@
                 <p class="price"><strong>¥${rt.price}</strong><span>起</span></p>
                 <p class="collect">
                     <a class="btn"><i class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
-
                     <a class="btn already" disabled="disabled"><i class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
                     <span>已收藏${rt.count}次</span>
                 </p>
             </div>
         </div>
     </div>
+    <script type="text/javascript">
+        $(function () {
+            $(".btn").click(function () {
+                var uname = '${sessionScope.user.username}';
+                if (uname == null || uname = "") {
+                    alert("请登录在收藏！");
+                    window.location.href = 'toLogin.do';
+                    return;
+                }
+                //已登录-发送ajax判断用户是否有收藏该线路
+                var rid = '${rt.rid}';
+                var uid = '${sessionScope.user.uid}';
+                $.post('doCollect.do', {"rid": rid, "uid": uid}, function (res) {
+                    if (res == "false") {
+                        alert("你已收藏过该线路！");
+                        //禁用收藏按钮
+                        $(".btn").attr("disabled", "disabled");
+                    }
+                    alert("收藏成功！");
+                    //禁用收藏按钮
+                    $(".btn").attr("disabled", "disabled");
+                })
+            });
+        })
+    </script>
     <div class="you_need_konw">
         <span>旅游须知</span>
         <div class="notice">

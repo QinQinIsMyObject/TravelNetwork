@@ -5,6 +5,7 @@ package com.zk.dao;
 
 import com.zk.entity.Route;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -30,4 +31,12 @@ public interface RouteMapper {
      * @return
      */
     Route selectByRid(Integer rid);
+
+    /**
+     * 更新某个线路的收藏次数
+     * @param rid
+     * @return
+     */
+    @Update("update tab_route set count=#{count} where rid=#{rid}")
+    int updateCount(Route rt);
 }

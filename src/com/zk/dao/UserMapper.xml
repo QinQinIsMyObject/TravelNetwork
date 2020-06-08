@@ -5,7 +5,7 @@
     <!-- 增加用户|注册 -->
     <insert id="addUser" useGeneratedKeys="true" keyProperty="uid">
         insert into tab_user(username, password, name, birthday, sex, telephone, email, status, code)
-        values (#{username}, #{password}, #{name}, #{birthday}, #{sex}, #{telephone}, #{email}, #{status}, #{code})
+        values (#{username}, #{password}, #{name}, #{birthday}, #{sex}, #{telephone}, #{email}, #{status}, #{code});
     </insert>
 
     <!-- 更新用户信息 -->
