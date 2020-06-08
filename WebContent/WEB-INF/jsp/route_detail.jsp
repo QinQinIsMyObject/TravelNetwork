@@ -67,7 +67,7 @@
         $(function () {
             $(".btn").click(function () {
                 var uname = '${sessionScope.user.username}';
-                if (uname == null || uname = "") {
+                if (uname == null || uname == "") {
                     alert("请登录在收藏！");
                     window.location.href = 'toLogin.do';
                     return;

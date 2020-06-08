@@ -49,6 +49,11 @@ public class RouteController {
         return null;
     }
 
+    /**
+     * 根据线路id查询线路详情
+     * @param rid
+     * @return
+     */
     @RequestMapping("/routeDetail.do")
     public ModelAndView routeDetail(@RequestParam(name = "rid", required = true, defaultValue = "") Integer rid) {
         ModelAndView modelAndView = new ModelAndView();

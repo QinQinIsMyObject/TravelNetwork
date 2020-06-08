@@ -14,9 +14,16 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 @Controller
 public class FavoriteController {
+
     @Autowired
     private FavoriteService favoriteService;
 
+    /**
+     * 收藏
+     *
+     * @param favorite
+     * @return
+     */
     @RequestMapping("/doCollect.do")
     @ResponseBody
     public String doCollect(Favorite favorite) {

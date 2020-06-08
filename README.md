@@ -801,7 +801,6 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
 </ul>
 ```
 ##### 百度分页效果分析
-
 ```
 1、判断上页和下页的形成条件
 	上一页：当前页面大于1；
@@ -811,9 +810,7 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
 	总页数大于10时；
 	当前页面小于等于6和大于6是的情况。
 ```
-
 ###### 分页效果展示-WebContent/WEB-INF/jsp/route_list.jsp
-
 ```jsp
 <div class="page_num_inf">
     <i></i> 共 <span>${page.pages}</span>页<span>${page.total}</span>条
@@ -869,7 +866,6 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
     </ul>
 </div>
 ```
-
 #### 9.线路详情查询
 
 ##### 功能分析
@@ -879,9 +875,7 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
 线路表和商家表是一对一关系通过外键sid关联、线路表和线路图片表示一对多关系通过外键rid进行关联；
 以线路表为主，在映射文件当中配置一对一和一对多关系。
 ```
-
 ##### 数据接口-src/com/zk/dao/RouteMapper.java
-
 ```java
 /**
  * 根据线路id查询线路
@@ -890,9 +884,7 @@ public ModelAndView getRouteList(@RequestParam(name = "pno", required = true, de
  */
 Route selectByRid(Integer rid);
 ```
-
 ##### 映射文件-src/com/zk/dao/RouteMapper.xml
-
 ```xml
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -938,13 +930,213 @@ Route selectByRid(Integer rid);
     </select>
 </mapper>
 ```
+##### 业务接口-src/com/zk/service/RouteService.java
+```java
+Route selectByRid(Integer rid);
+```
+##### 业务实现-src/com/zk/service/impl/RouteServiceImpl.java
+```java
+@Override
+public Route selectByRid(Integer rid) {
+    return routeMapper.selectByRid(rid);
+}
+```
+##### 控制层-src/com/zk/controller/RouteController.java
+```java
+/**
+ * 根据线路id查询线路详情
+ * @param rid
+ * @return
+ */
+@RequestMapping("/routeDetail.do")
+public ModelAndView routeDetail(@RequestParam(name = "rid", required = true, defaultValue = "") Integer rid) {
+    ModelAndView modelAndView = new ModelAndView();
+    Route route = routeService.selectByRid(rid);
+    if (route != null) {
+        List<RouteImg> imgList = route.getRouteImgList();
+        Seller seller = route.getSeller();
+        //线路对象
+        modelAndView.addObject("rt", route);
+        //图片集合
+        modelAndView.addObject("imgList", imgList);
+        //商家
+        modelAndView.addObject("sl", seller);
+        //去线路详情页面
+        modelAndView.setViewName("route_detail");
+        return modelAndView;
+    }
+    return null;
+}
+```
+##### 页面展示-WebContent/WEB-INF/jsp/route_detail.jsp
+```jsp
+<div class="prosum_box">
+    <dl class="prosum_left">
+        <dt>
+            <img alt="" class="big_img" src="${rt.rimage}">
+        </dt>
+        <dd>
+            <a class="up_img up_img_disable"></a>
+            <c:forEach items="${imgList}" var="i" varStatus="v">
+                <c:if test="${v.count>4}">
+                    <a title="" class="little_img" data-bigpic="${i.bigPic}" style="display:none;">
+                        <img src="${i.smallPic}">
+                    </a>
+                </c:if>
+                <c:if test="${v.count<=4}">
+                    <a title="" class="little_img" data-bigpic="${i.bigPic}">
+                        <img src="${i.smallPic}">
+                    </a>
+                </c:if>
+            </c:forEach>
+            <a class="down_img down_img_disable" style="margin-bottom: 0;"></a>
+        </dd>
+    </dl>
+    <div class="prosum_right">
+        <p class="pros_title">${rt.rname}</p>
+        <p class="hot">${rt.routeIntroduce}</p>
+        <div class="pros_other">
+            <p>经营商家 ：${sl.sname}</p>
+            <p>咨询电话 : ${sl.consphone}</p>
+            <p>地址 ：${sl.address}</p>
+        </div>
+        <div class="pros_price">
+            <p class="price"><strong>¥${rt.price}</strong><span>起</span></p>
+            <p class="collect">
+                <a class="btn"><i class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
+                <a class="btn already" disabled="disabled"><i class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
+                <span>已收藏${rt.count}次</span>
+            </p>
+        </div>
+    </div>
+</div>
+```
+#### 10.收藏功能
+###### 思路分析
+```
+	首先用户点击收藏时需要判断用户是否登录，如果没有登录给其提示并且跳转到登录页面;
+如果已经登录，需要查询该用户是否已经收藏过该线路，如果有收藏，则提示您已收藏过;
+如果已经登录，但是之前没有收藏过此线路，则将收藏的信息保存到数据库并更新线路的收藏次数。
+```
+###### 底层方法
+```
+1、根据用户id和线路id查询是否有收藏
+2、添加收藏的方法
+3、更新线路收藏次数的方法
+```
+##### 数据接口1-src/com/zk/dao/FavoriteMapper.java
+在FavoriteMapper中
+```java
+/**
+ * 根据线路id和用户id查询是否有收藏信息
+ *
+ * @param rid
+ * @param uid
+ * @return
+ */
+@Select("select * from tab_favorite where rid=#{rid} and uid=#{uid}")
+Favorite selectFtByRidAndUid(@Param("rid") Integer rid, @Param("uid") Integer uid);
 
+/**
+ * @param ft
+ * @return
+ */
+@Insert("insert into tab_favorite(rid, date, uid) values (#{rid},now(),#{uid})")
+int addCollect(Favorite ft);
+```
+##### 数据接口2-src/com/zk/dao/RouteMapper.java
+在RouteMapper接口中
+```java
+/**
+ * 更新某个线路的收藏次数
+ * @param rid
+ * @return
+ */
+@Update("update tab_route set count=#{count} where rid=#{rid}")
+int updateCount(Route rt);
+```
+##### 业务接口-src/com/zk/service/FavoriteService.java
+```java
+/**
+ * 收藏功能
+ * @param favorite
+ * @return
+ */
+boolean doCollect(Favorite favorite);
+```
+##### 业务实现-src/com/zk/service/impl/FavoriteServiceImpl.java
+```java 
+@Autowired
+private FavoriteMapper favoriteMapper;
 
+@Autowired
+private RouteMapper routeMapper;
 
+@Transactional
+public boolean doCollect(Favorite favorite) {
+    Favorite favorite1 = favoriteMapper.selectFtByRidAndUid(favorite.getRid(), favorite.getUid());
+    if (favorite1 == null) {
+        if (favoriteMapper.addCollect(favorite) > 0) {
+            Route route = routeMapper.selectByRid(favorite.getRid());
+            route.setCount(route.getCount() + 1);
+            routeMapper.updateCount(route);
+            return true;
+        }
+        return false;
+    }
+    return false;
+}
+```
+##### 控制层-src/com/zk/controller/FavoriteController.java
+```java
+@Autowired
+private FavoriteService favoriteService;
 
-
+/**
+ * 收藏
+ *
+ * @param favorite
+ * @return
+ */
+@RequestMapping("/doCollect.do")
+@ResponseBody
+public String doCollect(Favorite favorite) {
+    boolean flag = favoriteService.doCollect(favorite);
+    if (flag) {
+        return "true";
+    }
+    return "false";
+}
+```
+##### 页面请求-
+```js
+<script type="text/javascript">
+    $(function () {
+        $(".btn").click(function () {
+            var uname = '${sessionScope.user.username}';
+            if (uname == null || uname == "") {
+                alert("请登录在收藏！");
+                window.location.href = 'toLogin.do';
+                return;
+            }
+            //已登录-发送ajax判断用户是否有收藏该线路
+            var rid = '${rt.rid}';
+            var uid = '${sessionScope.user.uid}';
+            $.post('doCollect.do', {"rid": rid, "uid": uid}, function (res) {
+                if (res == "false") {
+                    alert("你已收藏过该线路！");
+                    //禁用收藏按钮
+                    $(".btn").attr("disabled", "disabled");
+                }
+                alert("收藏成功！");
+                //禁用收藏按钮
+                $(".btn").attr("disabled", "disabled");
+            })
+        });
+    })
+</script>
+```
 ### （6）项目总结
-
 ## 3、说明
 ### 项目中注意事项
 ```xml
@@ -983,6 +1175,14 @@ Route selectByRid(Integer rid);
     <artifactId>servlet-api</artifactId>
     <version>2.5</version>
 </dependency>
+```
+### 出现错误“Uncaught SyntaxError: Invalid left-hand side in assignment”，少些了一个等号；
+```js
+if (uname == null || uname == "") {
+    alert("请登录在收藏！");
+    window.location.href = 'toLogin.do';
+    return;
+}
 ```
 ## 5、附加
 ### sql教程

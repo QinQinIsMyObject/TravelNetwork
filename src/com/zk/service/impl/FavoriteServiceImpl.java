@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * @Author XieFucai
  * @Date 2020/6/7 23:57
- * @Description
+ * @Description 收藏业务实现
  */
 @Service
 public class FavoriteServiceImpl implements FavoriteService {
